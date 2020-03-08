@@ -6,8 +6,8 @@ const port = 3000
 // coding more 
 app.get('/p/:id', (req, res) => {
 	scrapePoints(req.params.id)
-	.then((result) => res.send('gotthem ' + result))
-	.catch((err) => res.send('gotthem ' + err))
+	.then((result) => res.send(result))
+	.catch((err) => res.send(err))
 })
 
 // this is comment
@@ -15,7 +15,7 @@ app.get('/p/:id', (req, res) => {
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 const scrapePoints = async (username) => {
-    const browser = await puppeteer.launch( { headless: true });
+    const browser = await puppeteer.launch( { headless: true, args:['--no-sandbox'] });
     const page = await browser.newPage();
     const url = 'https://trailhead.salesforce.com/en/me/' + username;
     await page.goto(url);

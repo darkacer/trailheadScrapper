@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "firebase-admin": "5.13.1",
+    "firebase-functions": "2.0.2",
     "puppeteer": "^2.1.1"
   }
 }
