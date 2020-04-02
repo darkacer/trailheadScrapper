@@ -1,65 +1,65 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+	<head>
+	<!-- <script src="https://unpkg.com/js-quadtree"></script> -->
+	
+	<script src='simulation.js'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<style>
+		canvas {
+			border:1px solid #d3d3d3;
+			background-color: #f1f1f1;
+		}
+		.block {
+			display: block;
+			width: 100%;
+			border: none;
+			background-color: #4CAF50;
+			color: white;
+			padding: 14px 28px;
+			font-size: 16px;
+			cursor: pointer;
+			text-align: center;
+		}
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/7.9.3/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/7.9.3/firebase-auth.js"></script>
-    <script defer src="/__/firebase/7.9.3/firebase-database.js"></script>
-    <script defer src="/__/firebase/7.9.3/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/7.9.3/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+		.block:hover {
+			background-color: #ddd;
+			color: black;
+		}
+		</style>
+	</head>
+	
+	<body onload="startGame()" style='display: inline-block;'>
+	<br>
+		<span style='display: inline-block;'>
+		<b>
+			Days : <span id='days'></span><br>
+			Susceptible/Healthy People <font color="green">(GREEN)</font>: <span id='susceptible'></span><br>
+			Current Infected People (<font color="red">RED</font>): <span id='infected'></span><br>
+			Demand for Hosp (<font color="blue">BLUE</font>): <span id='quarantine'></span><br>
+			Dead People (Removed)(<font color="black">BLACK</font>): <span id='deadpeople'></span><br>
+			Recovered People (Removed)(<font color="yellow">YELLOW</font>): <span id='recovered'></span><br>
+			</b><br>
+			Number Of People :<input id='numberOfPeople' type="number" value = 200 min = 100 max = 10000><br>
+			Number infected People :<input id='infectedPeople' type="number" value = 2 min = 0><br>
+			HealthCare Capacity :<input id='hospcapacity' type="number" value = 40 min = 0><br>
+			Mobility Percentage :<input id='mobilityPer' type="number" value = 40 min = 10  max=100><br>
+			<button class="block" onclick="kickStart()">Start Simulation</button>
+		</span>
+		<span style='display: inline-block;'>
+			<a href="https://www.youtube.com/watch?v=gxAaO2rsdIs&t=749s">Simulating an epidemic -- Youtube Link for more awesome simulations </a>
+			<canvas id="line-chart" style="display: block;" width="1000" height="500"></canvas>
+		</span>	
+		<div>
+			<b>
+			The simulation will last for 60 days (60 secs)<br>
+			Only given amount of people are infected at the start <br>
+			Once someone is infected (RED), after 5 days they start showing symptoms and isolate themselves and need a hospital / special care <br>
+			After 5 more days if this demand (BLUE) is more than HealthCare capacity (GREEN), there is 35% chance of death <br>
+			If this demand stays below HealthCare capacity, there is only 5% chance<br>
+			#flattenTheCurve by reducing mobility
+			</b>
+		</div>
+	</body>
+	<br>	
 </html>
